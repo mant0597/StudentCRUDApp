@@ -43,17 +43,27 @@ public class StudentService {
     }
     public Student getStudentById(int id) {
 
-        return repository.findById(id).orElse(null);
+        return repository.findById(id)
+                .orElseThrow(() ->
+                        new StudentNotFoundException(
+                                "Student not found"));
     }
     public void deleteStudent(int id){
-        repository.deleteById(id);
-    }
-    public void updateStudent(int id,Student s){
-        Student exisiting=repository.findById(id).orElse(null);
-        if (exisiting!=null){
-            exisiting.setName(s.getName());
-            repository.save(exisiting);
-        }
 
+        Student student = repository.findById(id)
+                .orElseThrow(() ->
+                        new StudentNotFoundException("Student not found"));
+
+        repository.delete(student);
+    }
+    public void updateStudent(int id, Student s){
+
+        Student existing = repository.findById(id)
+                .orElseThrow(() ->
+                        new StudentNotFoundException("Student not found"));
+
+        existing.setName(s.getName());
+
+        repository.save(existing);
     }
 }
